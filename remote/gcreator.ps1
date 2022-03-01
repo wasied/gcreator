@@ -34,8 +34,8 @@ New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "
 $TableName = {}
 
 -- Make loading functions
-local function Inclu(f) return include(`"${DevName}/f`") end
-local function AddCS(f) return AddCSLuaFile(`"${DevName}/f`") end
+local function Inclu(f) return include(`"${DevName}/`"..f) end
+local function AddCS(f) return AddCSLuaFile(`"${DevName}/`"..f) end
 local function IncAdd(f) return Inc(f), Add(f) end
 
 -- Load addon files
