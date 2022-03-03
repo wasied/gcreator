@@ -36,7 +36,7 @@ $TableName = {}
 -- Make loading functions
 local function Inclu(f) return include(`"${DevName}/`"..f) end
 local function AddCS(f) return AddCSLuaFile(`"${DevName}/`"..f) end
-local function IncAdd(f) return Inc(f), Add(f) end
+local function IncAdd(f) return Inclu(f), AddCS(f) end
 
 -- Load addon files
 IncAdd(`"config.lua`")
