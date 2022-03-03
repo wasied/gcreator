@@ -120,7 +120,7 @@ New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Valu
 hook.Add(`"HUDPaint`", `"${TableName}:HUDPaint`", function()
 
 	print(`"[${TableName}] The client can now see the screen!`")
-	hook.Remove(`"${TableName}:HUDPaint`")
+	hook.Remove(`"HUDPaint`", `"${TableName}:HUDPaint`")
 
 end)" -Force > $NULL
 
