@@ -52,29 +52,31 @@ local function IncAdd(f) return Inclu(f), AddCS(f) end
 
 -- Load addon files
 IncAdd(`"config.lua`")
-$(If ($NeedServer -eq "Y" || $NeedServer -eq "y") {`"IncAdd(`"constants.lua`")`"}, Else {""})
+$(If ($NeedServer -eq "Y" || $NeedServer -eq "y") {"
+	IncAdd(`"constants.lua`")
+"}, Else {""})
 
 if SERVER then
 
-	$(If ($NeedServer -eq "Y" || $NeedServer -eq "y") {`"
+	$(If ($NeedServer -eq "Y" || $NeedServer -eq "y") {"
 		Inclu(`"server/sv_functions.lua`")
 		Inclu(`"server/sv_hooks.lua`")
 		Inclu(`"server/sv_network.lua`")
-	`"}, Else {""})
+	"}, Else {""})
 
-	$(If ($NeedClient -eq "Y" || $NeedClient -eq "y") {`"
+	$(If ($NeedClient -eq "Y" || $NeedClient -eq "y") {"
 		AddCS(`"client/cl_functions.lua`")
 		AddCS(`"client/cl_hooks.lua`")
 		AddCS(`"client/cl_network.lua`")
-	`"}, Else {""})
+	"}, Else {""})
 
 else
 
-	$(If ($NeedClient -eq "Y" || $NeedClient -eq "y") {`"
+	$(If ($NeedClient -eq "Y" || $NeedClient -eq "y") {"
 		Inclu(`"client/cl_functions.lua`")
 		Inclu(`"client/cl_hooks.lua`")
 		Inclu(`"client/cl_network.lua`")
-	`"}, Else {""})
+	"}, Else {""})
 
 end
 " -Force > $NULL
