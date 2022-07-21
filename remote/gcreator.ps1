@@ -27,12 +27,12 @@ $LuaRoot = "$DevName/lua/$DevName/"
 # First step: Create folders
 New-Item -Name "$DevName/lua/autorun" -ItemType "directory" -Force > $NULL
 
-if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 	New-Item -Name "${LuaRoot}server" -ItemType "directory" -Force > $NULL
 }
 
-if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 	New-Item -Name "${LuaRoot}client" -ItemType "directory" -Force > $NULL
 }
@@ -41,9 +41,9 @@ Write-Host "Processing."
 
 # Second step: Create files
 ## autorun.lua
-$ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "Y" || $NeedServer -eq "y"))])
-$ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "Y" || $NeedClient -eq "y"))])
-$ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "Y" || $NeedConst -eq "y"))])
+$ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "Y" -or $NeedServer -eq "y"))])
+$ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "Y" -or $NeedClient -eq "y"))])
+$ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "Y" -or $NeedConst -eq "y"))])
 
 New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value "-- Loader file for '$DevName'
 -- Automatically created by gcreator (github.com/MaaxIT)
@@ -87,7 +87,7 @@ $TableName.Config.AdminRanks = {
 }" -Force > $NULL
 
 ## constants.lua
-if ($NeedConst -eq "Y" || $NeedConst -eq "y")
+if ($NeedConst -eq "Y" -or $NeedConst -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value "$TableName.Constants = {}
@@ -106,7 +106,7 @@ $TableName.Constants[`"materials`"] = {
 }
 
 ## cl_functions.lua
-if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value "$TableName.Fonts = {}
@@ -142,7 +142,7 @@ end" -Force > $NULL
 }
 
 ## cl_hooks.lua
-if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value "-- Called when the client is fully connected
@@ -156,7 +156,7 @@ end)" -Force > $NULL
 }
 
 ## cl_network.lua
-if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value "-- Called when the server ask for an update
@@ -170,7 +170,7 @@ end)" -Force > $NULL
 }
 
 ## sv_network.lua
-if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value "-- Network strings registration
@@ -193,7 +193,7 @@ end)" -Force > $NULL
 }
 
 ## sv_functions.lua
-if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value "-- Notify a player with the specified message
@@ -212,7 +212,7 @@ end" -Force > $NULL
 }
 
 ## sv_hooks.lua
-if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value "-- Called when the server is initialized
