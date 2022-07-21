@@ -5,6 +5,9 @@ Made by Wasied - feb2022
 # Asking for details
 $DevName = Read-Host -Prompt "Enter the (lowercase, one word) name of your addon (Default: 'addon_name')"
 $TableName = Read-Host -Prompt "Enter the name of the global table that will be created (Default: 'AddonName')"
+$NeedServer = Read-Host -Prompt "Do you need a server part on your addon ? (Y/n)"
+$NeedClient = Read-Host -Prompt "Do you need a client part on your addon ? (Y/n)"
+$NeedConst = Read-Host -Prompt "Do you want a file to put constants values ? (Y/n)"
 Write-Host ""
 Clear-Host
 
@@ -23,8 +26,17 @@ $LuaRoot = "$DevName/lua/$DevName/"
 
 # First step: Create folders
 New-Item -Name "$DevName/lua/autorun" -ItemType "directory" -Force > $NULL
-New-Item -Name "${LuaRoot}server" -ItemType "directory" -Force > $NULL
-New-Item -Name "${LuaRoot}client" -ItemType "directory" -Force > $NULL
+
+if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+{
+	New-Item -Name "${LuaRoot}server" -ItemType "directory" -Force > $NULL
+}
+
+if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+{
+	New-Item -Name "${LuaRoot}client" -ItemType "directory" -Force > $NULL
+}
+
 Write-Host "Processing."
 
 # Second step: Create files
@@ -40,23 +52,29 @@ local function IncAdd(f) return Inclu(f), AddCS(f) end
 
 -- Load addon files
 IncAdd(`"config.lua`")
-IncAdd(`"constants.lua`")
+$(If ($NeedServer -eq "Y" || $NeedServer -eq "y") {`"IncAdd(`"constants.lua`")`"}, Else {""})
 
 if SERVER then
 
-	Inclu(`"server/sv_functions.lua`")
-	Inclu(`"server/sv_hooks.lua`")
-	Inclu(`"server/sv_network.lua`")
+	$(If ($NeedServer -eq "Y" || $NeedServer -eq "y") {`"
+		Inclu(`"server/sv_functions.lua`")
+		Inclu(`"server/sv_hooks.lua`")
+		Inclu(`"server/sv_network.lua`")
+	`"}, Else {""})
 
-	AddCS(`"client/cl_functions.lua`")
-	AddCS(`"client/cl_hooks.lua`")
-	AddCS(`"client/cl_network.lua`")
+	$(If ($NeedClient -eq "Y" || $NeedClient -eq "y") {`"
+		AddCS(`"client/cl_functions.lua`")
+		AddCS(`"client/cl_hooks.lua`")
+		AddCS(`"client/cl_network.lua`")
+	`"}, Else {""})
 
 else
 
-	Inclu(`"client/cl_functions.lua`")
-	Inclu(`"client/cl_hooks.lua`")
-	Inclu(`"client/cl_network.lua`")
+	$(If ($NeedClient -eq "Y" || $NeedClient -eq "y") {`"
+		Inclu(`"client/cl_functions.lua`")
+		Inclu(`"client/cl_hooks.lua`")
+		Inclu(`"client/cl_network.lua`")
+	`"}, Else {""})
 
 end
 " -Force > $NULL
@@ -64,112 +82,133 @@ end
 ## config.lua
 New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value "$TableName.Config = {}
 
--- This is a configuration description
+-- Admin ranks
 $TableName.Config.AdminRanks = {
 	[`"superadmin`"] = true,	
 	[`"admin`"] = true	
 }" -Force > $NULL
 
 ## constants.lua
-New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value "$TableName.Constants = {}
+if ($NeedConst -eq "Y" || $NeedConst -eq "y")
+{
+	New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value "$TableName.Constants = {}
 
--- Colors constants
-$TableName.Constants[`"colors`"] = {
-	[`"background`"] = Color(28, 31, 39),
-	[`"hover`"] = Color(40, 45, 58)
+	-- Colors constants
+	$TableName.Constants[`"colors`"] = {
+		-- [`"background`"] = Color(28, 31, 39),
+		-- [`"hover`"] = Color(40, 45, 58)
+	}
+
+	-- Materials constants
+	$TableName.Constants[`"materials`"] = {
+		-- [`"logo`"] = Material(`"../html/loading.png`"),
+	}" -Force > $NULL
 }
 
--- Materials constants
-$TableName.Constants[`"materials`"] = {
-	[`"logo`"] = Material(`"../html/loading.png`"),
-}" -Force > $NULL
-
 ## cl_functions.lua
-New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value "$TableName.Fonts = {}
+if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+{
+	New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value "$TableName.Fonts = {}
 
--- Automatic responsive functions
-RX = RX or function(x) return x / 1920 * ScrW() end
-RY = RY or function(y) return y / 1080 * ScrH() end
+	-- Automatic responsive functions
+	RX = RX or function(x) return x / 1920 * ScrW() end
+	RY = RY or function(y) return y / 1080 * ScrH() end
 
--- Automatic font-creation function
-function ${TableName}:Font(iSize, iWidth)
+	-- Automatic font-creation function
+	function ${TableName}:Font(iSize, iWidth)
 
-	iSize = iSize or 15
-	iWidth = iWidth or 500
+		iSize = iSize or 15
+		iWidth = iWidth or 500
 
-	local sName = (`"${TableName}:Font:%i:%i`"):format(iSize, iWidth)
-	if not $TableName.Fonts[sName] then
+		local sName = (`"${TableName}:Font:%i:%i`"):format(iSize, iWidth)
+		if not $TableName.Fonts[sName] then
 
-		surface.CreateFont(sName, {
-			font = `"Arial`",
-			size = iSize,
-			width = iWidth,
-			extended = false
-		})
+			surface.CreateFont(sName, {
+				font = `"Arial`",
+				size = iSize,
+				width = iWidth,
+				extended = false
+			})
 
-		$TableName.Fonts[sName] = true
+			$TableName.Fonts[sName] = true
 
-	end
+		end
 
-	return sName
+		return sName
 
-end" -Force > $NULL
+	end" -Force > $NULL
+}
 
 ## cl_hooks.lua
-New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value "-- Called when the client is fully connected
-hook.Add(`"HUDPaint`", `"${TableName}:HUDPaint`", function()
+if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+{
+	New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value "-- Called when the client is fully connected
+	hook.Add(`"HUDPaint`", `"${TableName}:HUDPaint`", function()
 
-	print(`"[${TableName}] The client can now see the screen!`")
-	hook.Remove(`"HUDPaint`", `"${TableName}:HUDPaint`")
+		print(`"[${TableName}] The client can now see the screen!`")
+		hook.Remove(`"HUDPaint`", `"${TableName}:HUDPaint`")
 
-end)" -Force > $NULL
+	end)" -Force > $NULL
+}
 
 ## cl_network.lua
-New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value "-- Called when the server ask for an update
-net.Receive(`"${TableName}`:UpdateCache`", function()
+if ($NeedClient -eq "Y" || $NeedClient -eq "y")
+{
+	New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value "-- Called when the server ask for an update
+	net.Receive(`"${TableName}`:UpdateCache`", function()
 
-	${TableName}.Cache = net.ReadTable()
-	print(`"[${TableName}] Client cache updated!`")
+		${TableName}.Cache = net.ReadTable()
+		print(`"[${TableName}] Client cache updated!`")
 
-end)" -Force > $NULL
+	end)" -Force > $NULL
+}
 
 ## sv_network.lua
-New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value "-- Network strings registration
-util.AddNetworkString(`"${TableName}`:UpdateCache`")
+if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+{
+	New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value "-- Network strings registration
+	util.AddNetworkString(`"${TableName}`:UpdateCache`")
 
--- Called when the client ask for a server cache update
-net.Receive(`"${TableName}`:UpdateCache`", function(_, pPlayer)
+	-- Called when the client ask for a server cache update
+	net.Receive(`"${TableName}`:UpdateCache`", function(_, pPlayer)
 
-	if not IsValid(pPlayer) then return end
-	
-	local iCurTime = CurTime()
-	if (pPlayer.i${TableName}Cooldown or 0) > iCurTime then return end
-	pPlayer.i${TableName}Cooldown = iCurTime + 1
+		if not IsValid(pPlayer) then return end
+		
+		local iCurTime = CurTime()
+		if (pPlayer.i${TableName}Cooldown or 0) > iCurTime then return end
+		pPlayer.i${TableName}Cooldown = iCurTime + 1
 
-	${TableName}.Cache = net.ReadTable()
-	print(`"[${TableName}] Server cache updated!`")
+		${TableName}.Cache = net.ReadTable()
+		print(`"[${TableName}] Server cache updated!`")
 
-end)" -Force > $NULL
+	end)" -Force > $NULL
+}
 
 ## sv_functions.lua
-New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value "-- Notify a player with the specified message
-function ${TableName}:Notify(pPlayer, sContent)
+if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+{
+	New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value "-- Notify a player with the specified message
+	function ${TableName}:Notify(pPlayer, sContent)
 
-	if not IsValid(pPlayer) or not pPlayer:IsPlayer() then return end
+		if not IsValid(pPlayer) or not pPlayer:IsPlayer() then return end
 
-	if DarkRP then
-		return DarkRP.notify(pPlayer, 0, 7, sContent)
-	end
+		if DarkRP then
+			return DarkRP.notify(pPlayer, 0, 7, sContent)
+		end
 
-	return pPlayer:PrintMessage(HUD_PRINTTALK, sContent)
-	
-end" -Force > $NULL
+		return pPlayer:PrintMessage(HUD_PRINTTALK, sContent)
+		
+	end" -Force > $NULL
+}
 
 ## sv_hooks.lua
-New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value "-- Called when the client is fully connected
-hook.Add(`"Initialize`", `"${TableName}:Initialize`", function()
-print(`"[${TableName}] The server is now initialized!`")
-end)" -Force > $NULL
+if ($NeedServer -eq "Y" || $NeedServer -eq "y")
+{
+	New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value "-- Called when the server is initialized
+	hook.Add(`"Initialize`", `"${TableName}:Initialize`", function()
+	print(`"[${TableName}] Addon successfully initialized!`")
+	end)" -Force > $NULL
+}
 
 Write-Host "Processing..
 Processing..."
