@@ -41,6 +41,10 @@ Write-Host "Processing."
 
 # Second step: Create files
 ## autorun.lua
+$ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "Y" || $NeedServer -eq "y"))])
+$ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "Y" || $NeedClient -eq "y"))])
+$ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "Y" || $NeedConst -eq "y"))])
+
 New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value "-- Loader file for '$DevName'
 -- Automatically created by gcreator (github.com/MaaxIT)
 $TableName = {}
@@ -52,23 +56,23 @@ local function IncAdd(f) return Inclu(f), AddCS(f) end
 
 -- Load addon files
 IncAdd(`"config.lua`")
-$(($NeedConst -eq "Y" || $NeedConst -eq "y") ? 'IncAdd("constants.lua")' : $null)
+${ConstComment}IncAdd(`"constants.lua`")
 
 if SERVER then
 
-	$(($NeedServer -eq "Y" || $NeedServer -eq "y") ? $null : '-- ')Inclu(`"server/sv_functions.lua`")
-	$(($NeedServer -eq "Y" || $NeedServer -eq "y") ? $null : '-- ')Inclu(`"server/sv_hooks.lua`")
-	$(($NeedServer -eq "Y" || $NeedServer -eq "y") ? $null : '-- ')Inclu(`"server/sv_network.lua`")
+	${ServerComment}Inclu(`"server/sv_functions.lua`")
+	${ServerComment}Inclu(`"server/sv_hooks.lua`")
+	${ServerComment}Inclu(`"server/sv_network.lua`")
 
-	$(($NeedClient -eq "Y" || $NeedClient -eq "y") ? $null : '-- ')AddCS(`"client/cl_functions.lua`")
-	$(($NeedClient -eq "Y" || $NeedClient -eq "y") ? $null : '-- ')AddCS(`"client/cl_hooks.lua`")
-	$(($NeedClient -eq "Y" || $NeedClient -eq "y") ? $null : '-- ')AddCS(`"client/cl_network.lua`")
+	${ClientComment}AddCS(`"client/cl_functions.lua`")
+	${ClientComment}AddCS(`"client/cl_hooks.lua`")
+	${ClientComment}AddCS(`"client/cl_network.lua`")
 
 else
 
-	$(($NeedClient -eq "Y" || $NeedClient -eq "y") ? $null : '-- ')Inclu(`"client/cl_functions.lua`")
-	$(($NeedClient -eq "Y" || $NeedClient -eq "y") ? $null : '-- ')Inclu(`"client/cl_hooks.lua`")
-	$(($NeedClient -eq "Y" || $NeedClient -eq "y") ? $null : '-- ')Inclu(`"client/cl_network.lua`")
+	${ClientComment}Inclu(`"client/cl_functions.lua`")
+	${ClientComment}Inclu(`"client/cl_hooks.lua`")
+	${ClientComment}Inclu(`"client/cl_network.lua`")
 
 end
 " -Force > $NULL
@@ -122,7 +126,7 @@ function ${TableName}:Font(iSize, iWidth)
 
 		surface.CreateFont(sName, {
 			font = `"Arial`",
-			size = iSize,
+			size = RX(iSize),
 			width = iWidth,
 			extended = false
 		})
