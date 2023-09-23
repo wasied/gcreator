@@ -46,7 +46,7 @@ $ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "Y" -or $NeedClient -
 $ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "Y" -or $NeedConst -eq "y"))])
 
 New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value "-- Loader file for '$DevName'
--- Automatically created by gcreator (github.com/MaaxIT)
+-- Automatically created by gcreator (github.com/wasied)
 $TableName = {}
 
 -- Make loading functions
