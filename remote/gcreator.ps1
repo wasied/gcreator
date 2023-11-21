@@ -20,8 +20,6 @@ Processing"
 if ($DevName -eq "") { $DevName = "addon_name" }
 if ($TableName -eq "") { $TableName = "AddonName" }
 
-# $DevName = "wminimap"
-# $TableName = "WMinimap"
 $LuaRoot = "$DevName/lua/$DevName/"
 
 # First step: Create folders
