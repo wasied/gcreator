@@ -114,18 +114,18 @@ RX = RX or function(x) return x / 1920 * ScrW() end
 RY = RY or function(y) return y / 1080 * ScrH() end
 
 -- Automatic font-creation function
-function ${TableName}:Font(iSize, iWidth)
+function ${TableName}:Font(iSize, iWeight)
 
 	iSize = iSize or 15
-	iWidth = iWidth or 500
+	iWeight = iWeight or 500
 
-	local sName = (`"${TableName}:Font:%i:%i`"):format(iSize, iWidth)
+	local sName = (`"${TableName}:Font:%i:%i`"):format(iSize, iWeight)
 	if not $TableName.Fonts[sName] then
 
 		surface.CreateFont(sName, {
 			font = `"Arial`",
 			size = RX(iSize),
-			width = iWidth,
+			weight = iWeight,
 			extended = false
 		})
 
