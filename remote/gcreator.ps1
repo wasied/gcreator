@@ -92,13 +92,14 @@ New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value "$Ta
 
 -- Colors constants
 $TableName.Constants[`"colors`"] = {
-	-- [`"background`"] = Color(28, 31, 39),
-	-- [`"hover`"] = Color(40, 45, 58)
+	[`"background`"] = Color(20, 20, 20),
+	[`"header`"] = Color(35, 35, 35),
+	[`"primary`"] = Color(8, 67, 214),
 }
 
 -- Materials constants
 $TableName.Constants[`"materials`"] = {
-	-- [`"logo`"] = Material(`"../html/loading.png`"),
+	[`"logo`"] = Material(`"materials/${DevName}/icons/wasied.png`"),
 }" -Force > $NULL
 
 }
@@ -114,18 +115,22 @@ RX = RX or function(x) return x / 1920 * ScrW() end
 RY = RY or function(y) return y / 1080 * ScrH() end
 
 -- Automatic font-creation function
-function ${TableName}:Font(iSize, iWeight)
+function ${TableName}:Font(iSize, sType)
 
 	iSize = iSize or 15
-	iWeight = iWeight or 500
+	sType = sType or "Medium" -- "Light" for light, "Medium" for medium, "Bold" for bold
 
-	local sName = (`"${TableName}:Font:%i:%i`"):format(iSize, iWeight)
+	local sName = ("OSpawnMenu:Font:%i:%s"):format(iSize, sType)
 	if not $TableName.Fonts[sName] then
 
+		if sType == "Bold" then
+			sType = ""
+		end
+
 		surface.CreateFont(sName, {
-			font = `"Arial`",
+			font = (`"Montserrat`"):format(sType):Trim(),
 			size = RX(iSize),
-			weight = iWeight,
+			weight = 500,
 			extended = false
 		})
 
@@ -143,12 +148,9 @@ end" -Force > $NULL
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value "-- Called when the client is fully connected
-hook.Add(`"HUDPaint`", `"${TableName}:HUDPaint`", function()
-
-	print(`"[${TableName}] The client can now see the screen!`")
-	hook.Remove(`"HUDPaint`", `"${TableName}:HUDPaint`")
-
+New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value "-- Clear fonts cache after a screen size change
+hook.Add(`"OnScreenSizeChanged`", `"${TableName}:OnScreenSizeChanged`", function()
+	${TableName}.Fonts = {}
 end)" -Force > $NULL
 
 }
@@ -218,6 +220,21 @@ hook.Add(`"Initialize`", `"${TableName}:Initialize`", function()
 	print(`"[${TableName}] Addon successfully initialized!`")
 end)" -Force > $NULL
 
+}
+
+# Third step: Download necessary static files
+## Download fonts
+$FontFolderPath = "./$DevName/resource/fonts/"
+New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
+
+$FontFiles = @("Montserrat-Bold.ttf", "Montserrat-Light.ttf", "Montserrat-Medium.ttf")
+$BaseUrl = "https://raw.githubusercontent.com/wasied/gcreator/main/static/"
+
+# Télécharger chaque fichier de police
+foreach ($FontFile in $FontFiles) {
+    $FontUrl = $BaseUrl + $FontFile
+    $DestinationPath = $FontFolderPath + $FontFile
+    Invoke-WebRequest -Uri $FontUrl -OutFile $DestinationPath
 }
 
 Write-Host "Processing..
