@@ -1,5 +1,5 @@
 Write-Host "GCreator - Automatic addon creation
-Made by Wasied - feb2022
+Made by Wasied - Updated @ 6/2024
 "
 
 # Asking for details
@@ -12,7 +12,7 @@ Write-Host ""
 Clear-Host
 
 Write-Host "GCreator - Automatic addon creation
-Made by Wasied - feb2022
+Made by Wasied - Updated @ 06/2024
 
 Processing"
 
@@ -43,64 +43,64 @@ $ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "Y" -or $NeedServer -
 $ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "Y" -or $NeedClient -eq "y"))])
 $ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "Y" -or $NeedConst -eq "y"))])
 
-New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value "-- Loader file for '$DevName'
+New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value @"-- Loader file for '$DevName'
 -- Automatically created by gcreator (github.com/wasied)
 $TableName = {}
 
 -- Make loading functions
-local function Inclu(f) return include(`"${DevName}/`"..f) end
-local function AddCS(f) return AddCSLuaFile(`"${DevName}/`"..f) end
+local function Inclu(f) return include("${DevName}/"..f) end
+local function AddCS(f) return AddCSLuaFile("${DevName}/"..f) end
 local function IncAdd(f) return Inclu(f), AddCS(f) end
 
 -- Load addon files
-IncAdd(`"config.lua`")
-${ConstComment}IncAdd(`"constants.lua`")
+IncAdd("config.lua")
+${ConstComment}IncAdd("constants.lua")
 
 if SERVER then
 
-	${ServerComment}Inclu(`"server/sv_functions.lua`")
-	${ServerComment}Inclu(`"server/sv_hooks.lua`")
-	${ServerComment}Inclu(`"server/sv_network.lua`")
+	${ServerComment}Inclu("server/sv_functions.lua")
+	${ServerComment}Inclu("server/sv_hooks.lua")
+	${ServerComment}Inclu("server/sv_network.lua")
 
-	${ClientComment}AddCS(`"client/cl_functions.lua`")
-	${ClientComment}AddCS(`"client/cl_hooks.lua`")
-	${ClientComment}AddCS(`"client/cl_network.lua`")
+	${ClientComment}AddCS("client/cl_functions.lua")
+	${ClientComment}AddCS("client/cl_hooks.lua")
+	${ClientComment}AddCS("client/cl_network.lua")
 
 else
 
-	${ClientComment}Inclu(`"client/cl_functions.lua`")
-	${ClientComment}Inclu(`"client/cl_hooks.lua`")
-	${ClientComment}Inclu(`"client/cl_network.lua`")
+	${ClientComment}Inclu("client/cl_functions.lua")
+	${ClientComment}Inclu("client/cl_hooks.lua")
+	${ClientComment}Inclu("client/cl_network.lua")
 
 end
-" -Force > $NULL
+"@ -Force > $NULL
 
 ## config.lua
-New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value "$TableName.Config = {}
+New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"$TableName.Config = {}
 
 -- Admin ranks
 $TableName.Config.AdminRanks = {
-	[`"superadmin`"] = true,	
-	[`"admin`"] = true	
-}" -Force > $NULL
+	["superadmin"] = true,	
+	["admin"] = true	
+}"@ -Force > $NULL
 
 ## constants.lua
 if ($NeedConst -eq "Y" -or $NeedConst -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value "$TableName.Constants = {}
+New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"$TableName.Constants = {}
 
 -- Colors constants
-$TableName.Constants[`"colors`"] = {
-	[`"background`"] = Color(20, 20, 20),
-	[`"header`"] = Color(35, 35, 35),
-	[`"primary`"] = Color(8, 67, 214),
+$TableName.Constants["colors"] = {
+	["background"] = Color(20, 20, 20),
+	["header"] = Color(35, 35, 35),
+	["primary"] = Color(8, 67, 214),
 }
 
 -- Materials constants
-$TableName.Constants[`"materials`"] = {
-	[`"logo`"] = Material(`"materials/${DevName}/icons/wasied.png`"),
-}" -Force > $NULL
+$TableName.Constants["materials"] = {
+	["logo"] = Material("materials/${DevName}/icons/wasied.png"),
+}"@ -Force > $NULL
 
 }
 
@@ -108,7 +108,7 @@ $TableName.Constants[`"materials`"] = {
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value "$TableName.Fonts = {}
+New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value @"$TableName.Fonts = {}
 
 -- Automatic responsive functions
 RX = RX or function(x) return x / 1920 * ScrW() end
@@ -118,17 +118,17 @@ RY = RY or function(y) return y / 1080 * ScrH() end
 function ${TableName}:Font(iSize, sType)
 
 	iSize = iSize or 15
-	sType = sType or `"Medium`" -- Light, Medium or Bold
+	sType = sType or "Medium" -- Light, Medium or Bold
 
-	local sName = (`"OSpawnMenu:Font:%i:%s`"):format(iSize, sType)
+	local sName = ("OSpawnMenu:Font:%i:%s"):format(iSize, sType)
 	if not $TableName.Fonts[sName] then
 
 		if sType == "Bold" then
-			sType = `"`"
+			sType = ""
 		end
 
 		surface.CreateFont(sName, {
-			font = (`"Montserrat`"):format(sType):Trim(),
+			font = ("Montserrat"):format(sType):Trim(),
 			size = RX(iSize),
 			weight = 500,
 			extended = false
@@ -140,7 +140,7 @@ function ${TableName}:Font(iSize, sType)
 
 	return sName
 
-end" -Force > $NULL
+end"@ -Force > $NULL
 
 }
 
@@ -148,10 +148,10 @@ end" -Force > $NULL
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value "-- Clear fonts cache after a screen size change
-hook.Add(`"OnScreenSizeChanged`", `"${TableName}:OnScreenSizeChanged`", function()
+New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value @"-- Clear fonts cache after a screen size change
+hook.Add("OnScreenSizeChanged", "${TableName}:OnScreenSizeChanged", function()
 	${TableName}.Fonts = {}
-end)" -Force > $NULL
+end)"@ -Force > $NULL
 
 }
 
@@ -159,13 +159,13 @@ end)" -Force > $NULL
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value "-- Called when the server ask for an update
-net.Receive(`"${TableName}`:UpdateCache`", function()
+New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value @"-- Called when the server ask for an update
+net.Receive("${TableName}`:UpdateCache", function()
 
 	${TableName}.Cache = net.ReadTable()
-	print(`"[${TableName}] Client cache updated!`")
+	print("[${TableName}] Client cache updated!")
 
-end)" -Force > $NULL
+end)"@ -Force > $NULL
 
 }
 
@@ -173,11 +173,11 @@ end)" -Force > $NULL
 if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value "-- Network strings registration
-util.AddNetworkString(`"${TableName}`:UpdateCache`")
+New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value @"-- Network strings registration
+util.AddNetworkString("${TableName}`:UpdateCache")
 
 -- Called when the client ask for a server cache update
-net.Receive(`"${TableName}`:UpdateCache`", function(_, pPlayer)
+net.Receive("${TableName}`:UpdateCache", function(_, pPlayer)
 
 	if not IsValid(pPlayer) then return end
 	
@@ -186,9 +186,9 @@ net.Receive(`"${TableName}`:UpdateCache`", function(_, pPlayer)
 	pPlayer.i${TableName}Cooldown = iCurTime + 1
 
 	${TableName}.Cache = net.ReadTable()
-	print(`"[${TableName}] Server cache updated!`")
+	print("[${TableName}] Server cache updated!")
 
-end)" -Force > $NULL
+end)"@ -Force > $NULL
 
 }
 
@@ -196,7 +196,7 @@ end)" -Force > $NULL
 if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value "-- Notify a player with the specified message
+New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value @"-- Notify a player with the specified message
 function ${TableName}:Notify(pPlayer, sContent)
 
 	if not IsValid(pPlayer) or not pPlayer:IsPlayer() then return end
@@ -207,7 +207,7 @@ function ${TableName}:Notify(pPlayer, sContent)
 
 	return pPlayer:PrintMessage(HUD_PRINTTALK, sContent)
 	
-end" -Force > $NULL
+end"@ -Force > $NULL
 
 }
 
@@ -215,10 +215,10 @@ end" -Force > $NULL
 if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value "-- Called when the server is initialized
-hook.Add(`"Initialize`", `"${TableName}:Initialize`", function()
-	print(`"[${TableName}] Addon successfully initialized!`")
-end)" -Force > $NULL
+New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value @"-- Called when the server is initialized
+hook.Add("Initialize", "${TableName}:Initialize", function()
+	print("[${TableName}] Addon successfully initialized!")
+end)"@ -Force > $NULL
 
 }
 
@@ -242,5 +242,5 @@ Processing..."
 Clear-Host
 
 Write-Host "
-Successfully created ! Have fun.
+Successfully created! Have fun.
 Don't forget to follow me on https://twitch.tv/Wasied :)"
