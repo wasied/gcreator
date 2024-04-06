@@ -118,13 +118,13 @@ RY = RY or function(y) return y / 1080 * ScrH() end
 function ${TableName}:Font(iSize, sType)
 
 	iSize = iSize or 15
-	sType = sType or "Medium" -- "Light" for light, "Medium" for medium, "Bold" for bold
+	sType = sType or `"Medium`" -- Light, Medium or Bold
 
-	local sName = ("OSpawnMenu:Font:%i:%s"):format(iSize, sType)
+	local sName = (`"OSpawnMenu:Font:%i:%s`"):format(iSize, sType)
 	if not $TableName.Fonts[sName] then
 
 		if sType == "Bold" then
-			sType = ""
+			sType = `"`"
 		end
 
 		surface.CreateFont(sName, {
