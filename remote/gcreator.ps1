@@ -43,7 +43,8 @@ $ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "Y" -or $NeedServer -
 $ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "Y" -or $NeedClient -eq "y"))])
 $ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "Y" -or $NeedConst -eq "y"))])
 
-New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value @"-- Loader file for '$DevName'
+New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value @"
+-- Loader file for '$DevName'
 -- Automatically created by gcreator (github.com/wasied)
 $TableName = {}
 
@@ -76,19 +77,22 @@ end
 "@ -Force > $NULL
 
 ## config.lua
-New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"$TableName.Config = {}
+New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"
+$TableName.Config = {}
 
 -- Admin ranks
 $TableName.Config.AdminRanks = {
 	["superadmin"] = true,	
 	["admin"] = true	
-}"@ -Force > $NULL
+}
+"@ -Force > $NULL
 
 ## constants.lua
 if ($NeedConst -eq "Y" -or $NeedConst -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"$TableName.Constants = {}
+New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"
+$TableName.Constants = {}
 
 -- Colors constants
 $TableName.Constants["colors"] = {
@@ -100,7 +104,8 @@ $TableName.Constants["colors"] = {
 -- Materials constants
 $TableName.Constants["materials"] = {
 	["logo"] = Material("materials/${DevName}/icons/wasied.png"),
-}"@ -Force > $NULL
+}
+"@ -Force > $NULL
 
 }
 
@@ -108,7 +113,8 @@ $TableName.Constants["materials"] = {
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value @"$TableName.Fonts = {}
+New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value @"
+$TableName.Fonts = {}
 
 -- Automatic responsive functions
 RX = RX or function(x) return x / 1920 * ScrW() end
@@ -140,7 +146,8 @@ function ${TableName}:Font(iSize, sType)
 
 	return sName
 
-end"@ -Force > $NULL
+end
+"@ -Force > $NULL
 
 }
 
@@ -148,10 +155,12 @@ end"@ -Force > $NULL
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value @"-- Clear fonts cache after a screen size change
+New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value @"
+-- Clear fonts cache after a screen size change
 hook.Add("OnScreenSizeChanged", "${TableName}:OnScreenSizeChanged", function()
 	${TableName}.Fonts = {}
-end)"@ -Force > $NULL
+end)
+"@ -Force > $NULL
 
 }
 
@@ -159,13 +168,15 @@ end)"@ -Force > $NULL
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value @"-- Called when the server ask for an update
+New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value @"
+-- Called when the server ask for an update
 net.Receive("${TableName}`:UpdateCache", function()
 
 	${TableName}.Cache = net.ReadTable()
 	print("[${TableName}] Client cache updated!")
 
-end)"@ -Force > $NULL
+end)
+"@ -Force > $NULL
 
 }
 
@@ -173,7 +184,8 @@ end)"@ -Force > $NULL
 if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value @"-- Network strings registration
+New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value @"
+-- Network strings registration
 util.AddNetworkString("${TableName}`:UpdateCache")
 
 -- Called when the client ask for a server cache update
@@ -188,7 +200,8 @@ net.Receive("${TableName}`:UpdateCache", function(_, pPlayer)
 	${TableName}.Cache = net.ReadTable()
 	print("[${TableName}] Server cache updated!")
 
-end)"@ -Force > $NULL
+end)
+"@ -Force > $NULL
 
 }
 
@@ -196,7 +209,8 @@ end)"@ -Force > $NULL
 if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value @"-- Notify a player with the specified message
+New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value @"
+-- Notify a player with the specified message
 function ${TableName}:Notify(pPlayer, sContent)
 
 	if not IsValid(pPlayer) or not pPlayer:IsPlayer() then return end
@@ -207,7 +221,8 @@ function ${TableName}:Notify(pPlayer, sContent)
 
 	return pPlayer:PrintMessage(HUD_PRINTTALK, sContent)
 	
-end"@ -Force > $NULL
+end
+"@ -Force > $NULL
 
 }
 
@@ -215,10 +230,12 @@ end"@ -Force > $NULL
 if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 {
 
-New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value @"-- Called when the server is initialized
+New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value @"
+-- Called when the server is initialized
 hook.Add("Initialize", "${TableName}:Initialize", function()
 	print("[${TableName}] Addon successfully initialized!")
-end)"@ -Force > $NULL
+end)
+"@ -Force > $NULL
 
 }
 
