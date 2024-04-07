@@ -134,7 +134,7 @@ function ${TableName}:Font(iSize, sType)
 		end
 
 		surface.CreateFont(sName, {
-			font = ("Montserrat"):format(sType):Trim(),
+			font = ("Montserrat %s"):format(sType):Trim(),
 			size = RX(iSize),
 			weight = 500,
 			extended = false
