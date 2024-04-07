@@ -126,7 +126,7 @@ function ${TableName}:Font(iSize, sType)
 	iSize = iSize or 15
 	sType = sType or "Medium" -- Light, Medium or Bold
 
-	local sName = ("OSpawnMenu:Font:%i:%s"):format(iSize, sType)
+	local sName = ("${TableName}:Font:%i:%s"):format(iSize, sType)
 	if not $TableName.Fonts[sName] then
 
 		if sType == "Bold" then
