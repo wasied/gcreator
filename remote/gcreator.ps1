@@ -263,7 +263,6 @@ foreach ($FontFile in $FontFiles) {
 
 Write-Host "Processing..
 Processing..."
-Clear-Host
 
 Write-Host "
 Successfully created! Have fun.
