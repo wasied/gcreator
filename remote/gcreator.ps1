@@ -1,5 +1,5 @@
 Write-Host "GCreator - Automatic addon creation
-Made by Wasied - Updated @ 6/2024
+Made by Wasied - Updated @ 08/2024
 "
 
 # Asking for details
@@ -12,7 +12,7 @@ Write-Host ""
 Clear-Host
 
 Write-Host "GCreator - Automatic addon creation
-Made by Wasied - Updated @ 06/2024
+Made by Wasied - Updated @ 08/2024
 
 Processing"
 
