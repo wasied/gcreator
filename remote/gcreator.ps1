@@ -59,6 +59,13 @@ ${ConstComment}IncAdd("constants.lua")
 
 if SERVER then
 
+	resource.AddSingleFile("resource/fonts/MontserratW-Bold.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratW-ExtraBold.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratW-Light.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratW-Medium.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratW-SemiBold.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratW-Thin.ttf")
+
 	${ServerComment}Inclu("server/sv_functions.lua")
 	${ServerComment}Inclu("server/sv_hooks.lua")
 	${ServerComment}Inclu("server/sv_network.lua")
@@ -124,7 +131,7 @@ RY = RY or function(y) return y / 1080 * ScrH() end
 function ${TableName}:Font(iSize, sType)
 
 	iSize = iSize or 15
-	sType = sType or "Medium" -- Light, Medium or Bold
+	sType = sType or "Medium" -- Availables: Thin, Light, Medium, SemiBold, Bold, ExtraBold
 
 	local sName = ("${TableName}:Font:%i:%s"):format(iSize, sType)
 	if not $TableName.Fonts[sName] then
