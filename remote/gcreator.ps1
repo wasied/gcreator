@@ -251,7 +251,7 @@ end)
 $FontFolderPath = "./$DevName/resource/fonts/"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
-$FontFiles = @("Montserrat-Bold.ttf", "Montserrat-Light.ttf", "Montserrat-Medium.ttf")
+$FontFiles = @("MontserratW-Bold.ttf", "MontserratW-ExtraBold.ttf", "MontserratW-Light.ttf", "MontserratW-Medium.ttf", "MontserratW-SemiBold.ttf", "MontserratW-Thin.ttf")
 $BaseUrl = "https://raw.githubusercontent.com/wasied/gcreator/main/static/"
 
 # Télécharger chaque fichier de police
