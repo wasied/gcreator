@@ -177,7 +177,7 @@ if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value @"
 -- Called when the server ask for an update
-net.Receive("${TableName}`:UpdateCache", function()
+net.Receive("${TableName}:UpdateCache", function()
 
 	${TableName}.Cache = net.ReadTable()
 	print("[${TableName}] Client cache updated!")
@@ -193,10 +193,10 @@ if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
 
 New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value @"
 -- Network strings registration
-util.AddNetworkString("${TableName}`:UpdateCache")
+util.AddNetworkString("${TableName}:UpdateCache")
 
 -- Called when the client ask for a server cache update
-net.Receive("${TableName}`:UpdateCache", function(_, pPlayer)
+net.Receive("${TableName}:UpdateCache", function(_, pPlayer)
 
 	if not IsValid(pPlayer) then return end
 	
@@ -220,7 +220,7 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -
 -- Notify a player with the specified message
 function ${TableName}:Notify(pPlayer, sContent)
 
-	if not IsValid(pPlayer) or not pPlayer:IsPlayer() then return end
+	assert(IsValid(pPlayer), pPlayer:IsPlayer(), "Unable to notify an invalid player entity")
 
 	if DarkRP then
 		return DarkRP.notify(pPlayer, 0, 7, sContent)
