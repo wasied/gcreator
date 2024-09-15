@@ -72,12 +72,14 @@ if SERVER then
 
 	${ClientComment}AddCS("client/cl_functions.lua")
 	${ClientComment}AddCS("client/cl_hooks.lua")
+	${ClientComment}AddCS("client/cl_interface.lua")
 	${ClientComment}AddCS("client/cl_network.lua")
 
 else
 
 	${ClientComment}Inclu("client/cl_functions.lua")
 	${ClientComment}Inclu("client/cl_hooks.lua")
+	${ClientComment}Inclu("client/cl_interface.lua")
 	${ClientComment}Inclu("client/cl_network.lua")
 
 end
@@ -167,6 +169,50 @@ New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Valu
 hook.Add("OnScreenSizeChanged", "${TableName}:OnScreenSizeChanged", function()
 	${TableName}.Fonts = {}
 end)
+"@ -Force > $NULL
+
+}
+
+## cl_interface.lua
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
+{
+
+New-Item -Path "./${LuaRoot}client/" -Name "cl_interface.lua" -ItemType "file" -Value @"
+-- Open the base interface
+function ${TableName}:OpenMenu()
+
+	if IsValid(self.vMainMenu) then
+		self.vMainMenu:Remove()
+	end
+
+	local vFrame = vgui.Create("DFrame")
+	if not IsValid(vFrame) then return end
+	vFrame:SetSize(RX(800), RY(600))
+	vFrame:Center()
+	vFrame:SetTitle("")
+	vFrame:MakePopup()
+	vFrame:SetDraggable(false)
+	vFrame:ShowCloseButton(false)
+	function vFrame:Paint(w, h)
+		draw.RoundedBox(4, 0, 0, w, h, Color(10, 10, 10))
+	end
+	self.vMainMenu = vFrame
+
+	local vCloseButton = vgui.Create("DButton", vFrame)
+	vCloseButton:SetSize(RX(48), RX(48))
+	vCloseButton:SetPos(vFrame:GetWide() - vCloseButton:GetWide(), 0)
+	vCloseButton:SetText("")
+	function vCloseButton:Paint(w, h)
+		draw.SimpleText("X", ${TableName}:Font(40), w / 2, h / 2, color_white, 1, 1)
+	end
+	function vCloseButton:DoClick()
+		vFrame:Remove()
+	end
+
+end
+
+-- Remove these lines when finished
+-- ${TableName}:OpenMenu()
 "@ -Force > $NULL
 
 }
