@@ -266,7 +266,7 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -
 -- Notify a player with the specified message
 function ${TableName}:Notify(pPlayer, sContent)
 
-	assert(IsValid(pPlayer), pPlayer:IsPlayer(), "Unable to notify an invalid player entity")
+	assert(IsValid(pPlayer) and pPlayer:IsPlayer(), "Unable to notify an invalid player entity")
 
 	if DarkRP then
 		return DarkRP.notify(pPlayer, 0, 7, sContent)
