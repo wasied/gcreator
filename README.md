@@ -9,6 +9,9 @@ A script automatically creating a Garry's Mod addon base
 This script is automatically updated so **you don't need to come and download it every commit**.  
 You can see the remote powershell script in **remote/gcreator.ps1**.
 
+### If you get access denied
+If you're not able to run the script, download and use [the offline version](https://raw.githubusercontent.com/wasied/gcreator/main/remote/gcreator.ps1) instead.
+
 ### See how easy is it to create an addon with GCreator!
 [![Asking questions](https://i.gyazo.com/a329820235fe11bbec325873e8901a1a.gif)](https://gyazo.com/a329820235fe11bbec325873e8901a1a)
 [![File creation](https://i.gyazo.com/f30033c6c63ce83bd6e28dbc44262271.gif)](https://gyazo.com/f30033c6c63ce83bd6e28dbc44262271)
