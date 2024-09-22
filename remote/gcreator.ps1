@@ -73,6 +73,7 @@ if SERVER then
 
 	${ClientComment}AddCS("client/cl_functions.lua")
 	${ClientComment}AddCS("client/cl_hooks.lua")
+	${ClientComment}AddCS("client/cl_shadow.lua")
 	${ClientComment}AddCS("client/cl_interface.lua")
 	${ClientComment}AddCS("client/cl_network.lua")
 
@@ -80,6 +81,7 @@ else
 
 	${ClientComment}Inclu("client/cl_functions.lua")
 	${ClientComment}Inclu("client/cl_hooks.lua")
+	${ClientComment}Inclu("client/cl_shadow.lua")
 	${ClientComment}Inclu("client/cl_interface.lua")
 	${ClientComment}Inclu("client/cl_network.lua")
 
@@ -225,6 +227,151 @@ net.Receive("${TableName}:UpdateCache", function()
 	${TableName}.Cache = net.ReadTable()
 	print("[${TableName}] Client cache updated!")
 
+end)
+"@ -Force > $NULL
+
+}
+
+## cl_shadow.lua
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
+{
+
+New-Item -Path "./${LuaRoot}client/" -Name "cl_shadow.lua" -ItemType "file" -Value @"
+shadow = shadow or {}
+SHADOW = SHADOW or {}
+
+-- Initialize shadow
+function shadow.Initialize()
+
+	local tShadows = {}
+	local iScrW, iScrH = ScrW(), ScrH()
+	local sResStr = iScrW..iScrH
+
+	tShadows.oRT1 = GetRenderTarget("${DevName}_shadow_original_"..sResStr, iScrW, iScrH)
+	tShadows.oRT2 = GetRenderTarget("${DevName}_shadow_shadow_"..sResStr, iScrW, iScrH)
+
+	tShadows.mShadowMaterialOriginal = CreateMaterial("${DevName}_shadows_original", "UnlitGeneric", {
+		["`$translucent"] = 1,
+		["`$vertexalpha"] = 1,
+		["`$alpha"] = 1
+	})
+
+	tShadows.mShadowMaterialGray = CreateMaterial("${DevName}_shadows_grayscale", "UnlitGeneric", {
+		["`$translucent"] = 1,
+		["`$vertexalpha"] = 1,
+		["`$alpha"] = 1,
+		["`$color"] = "0 0 0",
+		["`$color2"] = "0 0 0"
+	})
+
+	function tShadows:IsEnabled()
+		return true
+	end
+
+	function tShadows:BeginShadow()
+
+		if not self:IsEnabled() then return end
+
+		render.PushRenderTarget(self.oRT1)
+		render.OverrideAlphaWriteEnable(true, true)
+		render.Clear(0,0,0,0)
+		render.OverrideAlphaWriteEnable(false, false)
+		cam.Start2D()
+
+	end
+
+	function tShadows:EndShadow(iIntensity, iBlurOffset, iBlur, iOpacity, iDirection, iDistance, bShadowOnly)
+
+		if not self:IsEnabled() then return end
+
+		iOpacity = iOpacity or 255
+		iDirection = iDirection or 0
+		iDistance = iDistance or 0
+		bShadowOnly = bShadowOnly or false
+
+		render.CopyRenderTargetToTexture(self.oRT2)
+
+		if iBlur > 0 then
+			render.OverrideAlphaWriteEnable(true, true)
+			render.BlurRenderTarget(self.oRT2, iBlurOffset, iBlurOffset, iBlur)
+			render.OverrideAlphaWriteEnable(false, false)
+		end
+
+		render.PopRenderTarget()
+
+		self.mShadowMaterialOriginal:SetTexture("`$basetexture", self.oRT1)
+		self.mShadowMaterialGray:SetTexture("`$basetexture", self.oRT2)
+
+		local iOffX = math.sin(math.rad(iDirection)) * iDistance
+		local iOffY = math.cos(math.rad(iDirection)) * iDistance
+
+		self.mShadowMaterialGray:SetFloat("`$alpha", iOpacity / 255)
+
+		render.SetMaterial(self.mShadowMaterialGray)
+		for i = 1, math.ceil(iIntensity) do
+			render.DrawScreenQuadEx(iOffX, iOffY, iScrW, iScrH)
+		end
+
+		if not bShadowOnly then
+
+			self.mShadowMaterialOriginal:SetTexture("`$basetexture", self.oRT1)
+
+			render.SetMaterial(self.mShadowMaterialOriginal)
+			render.DrawScreenQuad()
+
+		end
+
+		cam.End2D()
+
+	end
+
+	function tShadows:DrawShadowTexture(sTexture, iIntensity, iBlurOffset, iBlur, iOpacity, iDirection, iDistance, bShadowOnly)
+
+		if not self:IsEnabled() then return end
+
+		iOpacity = iOpacity or 255
+		iDirection = iDirection or 0
+		iDistance = iDistance or 0
+		bShadowOnly = bShadowOnly or false
+
+		render.CopyTexture(sTexture, self.oRT2)
+
+		if iBlur > 0 then
+
+			render.PushRenderTarget(self.oRT2)
+			render.OverrideAlphaWriteEnable(true, true)
+			render.BlurRenderTarget(self.oRT2, iBlurOffset, iBlurOffset, iBlur)
+			render.OverrideAlphaWriteEnable(false, false)
+			render.PopRenderTarget()
+
+		end
+
+		self.mShadowMaterialGray:SetTexture("`$basetexture", self.oRT2)
+
+		local iOffX = math.sin(math.rad(iDirection)) * iDistance
+		local iOffY = math.cos(math.rad(iDirection)) * iDistance
+
+		self.mShadowMaterialGray:SetFloat("`$alpha", iOpacity / 255)
+
+		render.SetMaterial(self.mShadowMaterialGray)
+		for i = 1, math.ceil(iIntensity) do
+			render.DrawScreenQuadEx(iOffX, iOffY, iScrW, iScrH)
+		end
+
+		if not bShadowOnly then
+			self.mShadowMaterialOriginal:SetTexture("`$basetexture", sTexture)
+			render.SetMaterial(self.mShadowMaterialOriginal)
+			render.DrawScreenQuad()
+		end
+
+	end
+
+	SHADOW = tShadows
+	
+end
+hook.Add("OnScreenSizeChanged", "${TableName}:Shadow:ReloadShadows", shadow.Initialize)
+hook.Add("HUDPaint", "${TableName}:Shadow:HUDPaint", function()
+	shadow.Initialize()
 end)
 "@ -Force > $NULL
 
