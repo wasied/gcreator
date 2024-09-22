@@ -113,7 +113,7 @@ $TableName.Constants["colors"] = {
 
 -- Materials constants
 $TableName.Constants["materials"] = {
-	["logo"] = Material("materials/${DevName}/icons/wasied.png"),
+	["logo"] = Material("${DevName}/icons/wasied.png"),
 }
 "@ -Force > $NULL
 
