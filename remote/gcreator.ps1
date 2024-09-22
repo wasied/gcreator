@@ -59,12 +59,13 @@ ${ConstComment}IncAdd("constants.lua")
 
 if SERVER then
 
-	resource.AddSingleFile("resource/fonts/MontserratW-Bold.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratW-ExtraBold.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratW-Light.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratW-Medium.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratW-SemiBold.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratW-Thin.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratWasied-Bold.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratWasied-ExtraBold.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratWasied-Light.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratWasied-Medium.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratWasied-SemiBold.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratWasied-Thin.ttf")
+	resource.AddSingleFile("resource/fonts/MontserratWasied-Italic.ttf")
 
 	${ServerComment}Inclu("server/sv_functions.lua")
 	${ServerComment}Inclu("server/sv_hooks.lua")
@@ -133,14 +134,10 @@ RY = RY or function(y) return y / 1080 * ScrH() end
 function ${TableName}:Font(iSize, sType)
 
 	iSize = iSize or 15
-	sType = sType or "Medium" -- Availables: Thin, Light, Medium, SemiBold, Bold, ExtraBold
+	sType = sType or "Medium" -- Availables: Thin, Light, Medium, SemiBold, Bold, ExtraBold, Italic
 
 	local sName = ("${TableName}:Font:%i:%s"):format(iSize, sType)
 	if not $TableName.Fonts[sName] then
-
-		if sType == "Bold" then
-			sType = ""
-		end
 
 		surface.CreateFont(sName, {
 			font = ("Montserrat %s"):format(sType):Trim(),
@@ -297,7 +294,7 @@ end)
 $FontFolderPath = "./$DevName/resource/fonts/"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
-$FontFiles = @("MontserratW-Bold.ttf", "MontserratW-ExtraBold.ttf", "MontserratW-Light.ttf", "MontserratW-Medium.ttf", "MontserratW-SemiBold.ttf", "MontserratW-Thin.ttf")
+$FontFiles = @("MontserratWasied-Bold.ttf", "MontserratWasied-ExtraBold.ttf", "MontserratWasied-Light.ttf", "MontserratWasied-Medium.ttf", "MontserratWasied-SemiBold.ttf", "MontserratWasied-Thin.ttf", "MontserratWasied-Italic.ttf")
 $BaseUrl = "https://raw.githubusercontent.com/wasied/gcreator/main/static/"
 
 # Télécharger chaque fichier de police
