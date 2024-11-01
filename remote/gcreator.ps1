@@ -57,15 +57,20 @@ local function IncAdd(f) return Inclu(f), AddCS(f) end
 IncAdd("config.lua")
 ${ConstComment}IncAdd("constants.lua")
 
+local tResources = {
+	{ sPath = "addons/${DevName}/resource/fonts/*.ttf", sFormat = "resource/fonts/%s" },
+}
+
 if SERVER then
 
-	resource.AddSingleFile("resource/fonts/MontserratWasied-Bold.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratWasied-ExtraBold.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratWasied-Light.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratWasied-Medium.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratWasied-SemiBold.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratWasied-Thin.ttf")
-	resource.AddSingleFile("resource/fonts/MontserratWasied-Italic.ttf")
+	for _, v in ipairs(tResources) do
+		local tFiles = file.Find(v.sPath, "GAME")
+		if not tFiles or not istable(tFiles) then return end
+
+		for _, sFile in pairs(tFiles) do
+			resource.AddSingleFile(v.sFormat:format(sFile))
+		end
+	end
 
 	${ServerComment}Inclu("server/sv_functions.lua")
 	${ServerComment}Inclu("server/sv_hooks.lua")
