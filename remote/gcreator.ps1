@@ -58,18 +58,20 @@ IncAdd("config.lua")
 ${ConstComment}IncAdd("constants.lua")
 
 local tResources = {
-	{ sPath = "addons/${DevName}/resource/fonts/*.ttf", sFormat = "resource/fonts/%s" },
+	"resource/fonts/*.ttf"
 }
 
 if SERVER then
 
-	for _, v in ipairs(tResources) do
-		local tFiles = file.Find(v.sPath, "GAME")
-		if not tFiles or not istable(tFiles) then return end
+	-- Automatically find resources to load
+	for _, sPath in ipairs(tResources) do
 
-		for _, sFile in pairs(tFiles) do
-			resource.AddSingleFile(v.sFormat:format(sFile))
+		local tFiles = file.Find("addons/${DevName}/"..sPath, "GAME")
+
+		for _, sFile in ipairs(tFiles or {}) do
+			resource.AddSingleFile(string.GetPathFromFilename(sPath)..sFile)
 		end
+
 	end
 
 	${ServerComment}Inclu("server/sv_functions.lua")
