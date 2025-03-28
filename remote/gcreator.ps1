@@ -149,7 +149,7 @@ function ${TableName}:Font(iSize, sType)
 	if not $TableName.Fonts[sName] then
 
 		surface.CreateFont(sName, {
-			font = ("Montserrat %s"):format(sType):Trim(),
+			font = ("MontserratWasied %s"):format(sType):Trim(),
 			size = RX(iSize),
 			weight = 500,
 			extended = false
